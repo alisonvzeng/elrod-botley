@@ -17,17 +17,6 @@ client = slack.WebClient(
                 token=SLACK_TOKEN)
 BOT_ID = client.api_call("auth.test")['user_id']
 
-#client.chat_postMessage(channel='#test', text="hello world")
-
-# @slack_event_adapter.on('message')
-# def message(payload):
-#     event = payload.get('event',{})
-#     channel_id = event.get('channel')
-#     user_id = event.get('user')
-#     text = event.get('text')
-
-#     if user_id != BOT_ID:
-#         client.chat_postMessage(channel=channel_id, text=text)
 def get_bot_channel():
     channels = client.conversations_list()['channels']
     for channel in channels:
@@ -47,12 +36,12 @@ def vote():
     channel_name = data.get('channel_name')
 
     print(phase, channel_name)
-    if (phase and channel_name == 'main-chat') or (not phase and channel_name == 'villains'):
+    if (phase and channel_name == 'main-chat') or (not phase and channel_name == 'koopa-troop'):
         player_vote(user_id, user_name, text, channel_id)
     elif channel_name == 'moderators':
         mod_vote(user_id, user_name, text, channel_id)
     else:
-        client.chat_postEphemeral(channel=channel_id, user=user_id, text="It's not the right time/place to use this command! You may only vote in #main-chat during the day, or in #villains during the night if you are a villain. Right now the phase is " + \
+        client.chat_postEphemeral(channel=channel_id, user=user_id, text="It's not the right time/place to use this command! You may only vote in #main-chat during the day, or in #koopa-troop during the night if you are a member of the mafia. Right now the phase is " + \
                                   ("Day." if phase else "Night."))
     return Response(), 200
 
@@ -111,12 +100,12 @@ def remove_vote():
     channel_name = data.get('channel_name')
 
     print(phase, channel_name)
-    if (phase and channel_name == 'main-chat') or (not phase and channel_name == 'villains'):
+    if (phase and channel_name == 'main-chat') or (not phase and channel_name == 'koopa-troop'):
         player_remove(user_id, user_name, text, channel_id)
     elif channel_name == 'moderators':
         mod_remove(user_id, user_name, text, channel_id)
     else:
-        client.chat_postEphemeral(channel=channel_id, user=user_id, text="It's not the right time/place to use this command! You may only remove your vote in #main-chat during the day, or in #villains during the night if you are a villain. Right now the phase is " + \
+        client.chat_postEphemeral(channel=channel_id, user=user_id, text="It's not the right time/place to use this command! You may only remove your vote in #main-chat during the day, or in #koopa-troop during the night if you are a member of the mafia. Right now the phase is " + \
                                   ("Day." if phase else "Night."))
     return Response(), 200
 
@@ -156,10 +145,10 @@ def currentvotes():
     channel_id = data.get('channel_id')
     channel_name = data.get('channel_name')
 
-    if (phase and channel_name == 'main-chat') or (not phase and channel_name == 'villains') or (channel_name == 'moderators'):
+    if (phase and channel_name == 'main-chat') or (not phase and channel_name == 'koopa-troop') or (channel_name == 'moderators'):
         client.chat_postEphemeral(channel=channel_id, user=user_id, text=vote_count_to_str())
     else:
-        client.chat_postEphemeral(channel=channel_id, user=user_id, text="It's not the right time/place to use this command! You may only view the current votes in #main-chat during the day, or in #villains during the night if you are a villain. Right now the phase is " + \
+        client.chat_postEphemeral(channel=channel_id, user=user_id, text="It's not the right time/place to use this command! You may only view the current votes in #main-chat during the day, or in #koopa-troop during the night if you are a member of the mafia. Right now the phase is " + \
                                   ("Day." if phase else "Night."))
     
     print(data)
