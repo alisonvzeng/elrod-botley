@@ -1,0 +1,4 @@
+Flask==2.3.2
+slack-sdk==3.39.0
+requests==2.32.0
+gunicorn==23.0.0
